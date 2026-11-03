@@ -1,0 +1,2 @@
+# Device tree vendor prefix used by the dynamic settings module.
+dynamic	Dynamic Settings

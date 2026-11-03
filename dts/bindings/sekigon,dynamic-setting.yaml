@@ -1,0 +1,64 @@
+description: Typed setting declared inside an Nemu-link settings group
+compatible: "sekigon,dynamic-setting"
+properties:
+  setting-name:
+    type: string
+    required: true
+  label:
+    type: string
+    required: true
+  ui-subgroup:
+    type: string
+    required: false
+  ui-component:
+    type: string
+    required: false
+  value-type:
+    type: string
+    required: true
+    enum: [bool, u8, u16, u32, s8, s16, s32, enum, text]
+  default-bool:
+    type: int
+  default-int:
+    type: int
+  default-enum:
+    type: string
+  default-string:
+    type: string
+  minimum:
+    type: int
+  maximum:
+    type: int
+  step:
+    type: int
+  enum-values:
+    type: string-array
+  unit:
+    type: string
+  widget:
+    type: string
+    enum: [auto, checkbox, select, number, slider, bitmask, button, graph, textbox]
+    default: auto
+  text-length:
+    type: int
+    description: Maximum UTF-8 byte length for a text setting. The schema generator lowers it to the required number of u32 chunks.
+  help:
+    type: string
+  read-only:
+    type: boolean
+  persistent:
+    type: boolean
+  volatile:
+    type: boolean
+    description: Do not store this setting in the settings cache or flash record.
+  reboot-required:
+    type: boolean
+  max-length:
+    type: int
+  on-change:
+    type: string
+  runtime-field:
+    type: string
+    description: C member in the group's runtime target struct for declarative value copying
+  default-property:
+    type: string

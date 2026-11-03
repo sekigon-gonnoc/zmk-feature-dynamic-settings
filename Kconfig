@@ -1,0 +1,30 @@
+# SPDX-License-Identifier: MIT
+
+menuconfig ZMK_DYNAMIC_SETTINGS
+	bool "Dynamic settings"
+	select SETTINGS
+	select ZMK_DYNAMIC_SETTINGS_SCHEMA
+	imply NVS
+	help
+	  Enable the Nemu-link typed settings store and generated settings schema.
+	  Prefer NVS as the settings backend when the platform supports it. A
+	  different backend can still be selected by the board configuration.
+
+if ZMK_DYNAMIC_SETTINGS
+
+config ZMK_DYNAMIC_SETTINGS_INIT_PRIORITY
+	int "Settings preload init priority"
+	range 1 99
+	default 80
+	help
+	  Load Nemu-link settings before hardware drivers that consume reboot-required
+	  settings during their POST_KERNEL initialization.
+
+config ZMK_DYNAMIC_SETTINGS_SCHEMA
+	bool "Generate the Nemu-link settings schema"
+	default y
+	help
+	  Generate a per-build canonical-CBOR schema and embed its compressed form
+	  in ROM for bounded Studio schema reads.
+
+endif

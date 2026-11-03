@@ -1,0 +1,13 @@
+description: Remote settings group described by this firmware image
+compatible: "sekigon,dynamic-settings-proxy-group"
+include: sekigon,dynamic-settings-group.yaml
+properties:
+  target-id:
+    type: string
+    required: true
+  target-role:
+    type: string
+    required: false
+  target-source:
+    type: int
+    required: false

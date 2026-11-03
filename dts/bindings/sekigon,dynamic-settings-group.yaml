@@ -1,0 +1,66 @@
+description: Settings group backed by a device in this firmware image
+compatible: "sekigon,dynamic-settings-group"
+properties:
+  module-name:
+    type: string
+    required: true
+  group-name:
+    type: string
+    required: true
+  instance-name:
+    type: string
+    required: true
+  label:
+    type: string
+    required: true
+  scope:
+    type: string
+    required: true
+    enum: [local, shared, owner]
+  kconfig-condition:
+    type: string
+    description: Emit this group only when the named Kconfig symbol is enabled
+    required: false
+  format-version:
+    type: int
+    required: true
+  target-role:
+    type: string
+    required: false
+  actual-device:
+    type: phandle
+  default-provider:
+    type: string
+    required: false
+  default-provider-context-free:
+    type: boolean
+    description: The default provider does not require an actual device context
+    required: false
+  runtime-read-provider:
+    type: string
+    required: false
+  record-type:
+    type: string
+    required: false
+  record-max-length:
+    type: int
+    required: false
+  record-default:
+    type: array
+    required: false
+  record-on-change:
+    type: string
+  runtime-struct-header:
+    type: string
+    description: Header that defines the runtime target struct
+  runtime-struct-type:
+    type: string
+    description: C struct tag used by runtime-field bindings
+  runtime-apply-provider:
+    type: string
+    description: Optional group-level post-copy handler for side effects
+    required: false
+  runtime-lock-field:
+    type: string
+    description: k_spinlock member in the runtime target struct
+    required: false
