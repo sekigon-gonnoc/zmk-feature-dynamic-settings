@@ -478,6 +478,20 @@ def build_schema(edt, layer_reordering=False, config_values=None, contributors=(
         if sorted(indices) != list(range(len(indices))):
             raise ValueError(f"{feature} dispatcher slot-index values must be unique and contiguous from 0")
 
+    keyboard_target_roles = {
+        node_value(node, "target-role")
+        for node in ordered_nodes
+        if node.status == "okay"
+        and isinstance(node_value(node, "target-role"), str)
+        and node_value(node, "target-role").startswith("keyboard-")
+    }
+    schema_default_target_role = (
+        next(iter(keyboard_target_roles)) if len(keyboard_target_roles) == 1 else "keyboard-right"
+    )
+
+    def default_target_role():
+        return schema_default_target_role
+
     context = SimpleNamespace(
         nodes=ordered_nodes,
         config_values=config_values,
@@ -489,6 +503,7 @@ def build_schema(edt, layer_reordering=False, config_values=None, contributors=(
         check_name=check_name,
         make_group=make_group,
         validate_slot_count=validate_slot_count,
+        default_target_role=default_target_role,
     )
     for contributor_name, contribute in contributors:
         try:
@@ -572,6 +587,10 @@ def build_schema(edt, layer_reordering=False, config_values=None, contributors=(
         record_max_length = node_value(node, "record-max-length")
         record_default = node_value(node, "record-default")
         record_callback = validate_callback(node_value(node, "record-on-change"))
+        record_callback_context_free = canonical_bool(
+            node_value(node, "record-on-change-context-free", False),
+            f"{'/'.join(canonical)}.record-on-change-context-free",
+        )
         slot_index = node_value(node, "slot-index", 0xFF)
         if type(slot_index) is not int or not 0 <= slot_index <= 0xFF:
             raise ValueError(
@@ -624,6 +643,7 @@ def build_schema(edt, layer_reordering=False, config_values=None, contributors=(
             if (
                 node_value(node, "actual-device") is None
                 and not default_provider_context_free
+                and not record_callback_context_free
             ):
                 raise ValueError(f"{'/'.join(canonical)}: actual group needs actual-device")
             target_source = None
@@ -684,7 +704,7 @@ def build_schema(edt, layer_reordering=False, config_values=None, contributors=(
                 or runtime_read_provider
                 or runtime_apply_provider
                 or item["default_property"]
-                or record_callback
+                or (record_callback and not record_callback_context_free)
             )
             if needs_device_context and not proxy and (
                 not isinstance(device_label, str)
